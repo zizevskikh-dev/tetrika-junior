@@ -1,74 +1,111 @@
-from bs4 import BeautifulSoup
-import pandas as pd
-import requests
+from pathlib import Path
+from typing import Dict, List
 from urllib.parse import urljoin
 
-
-
-# from config import WebdriverConfig
-
-
-# class WikiAnimalParser:
-#     def __init__(self):
-#         self.driver = WebdriverConfig().DRIVER
-#         self.start_page = "https://ru.wikipedia.org/w/index.php?title=%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:%D0%96%D0%B8%D0%B2%D0%BE%D1%82%D0%BD%D1%8B%D0%B5_%D0%BF%D0%BE_%D0%B0%D0%BB%D1%84%D0%B0%D0%B2%D0%B8%D1%82%D1%83"
-#         self.animals_xpath='//div[@class="mw-category mw-category-columns"]//li'
-#         self.next_page_xpath='//a[text()="Следующая страница"]'
-#         self.animals = set()
-#
-#     def run(self):
-#         self.driver.get(self.start_page)
-#         self._inspect_page()
-#
-#     def _inspect_page(self):
-#         li_elements = self.driver.find_elements("xpath", self.animals_xpath)
-#
-#         for li_element in li_elements:
-#             animal_name = li_element.text
-#             self.animals.add(animal_name)
-#
-#         print(len(self.animals))
-#
-#         next_page_link = self.driver.find_element("xpath",self.next_page_xpath)
-#         next_page_link.click()
-#
-#         self._inspect_page()
+from bs4 import BeautifulSoup
+from loguru import logger
+import pandas as pd
+import requests
 
 
 class WikiAnimalParser:
-    def __init__(self):
-        self.home_page = "https://ru.wikipedia.org/"
-        self.data = []
+    """
+    A parser that extracts animal names from the Wikipedia,
+    groups them by their first letter, and writes a report to a CSV file.
+    """
 
-    def run(self):
-        start_page_suffix = "w/index.php?title=%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:%D0%96%D0%B8%D0%B2%D0%BE%D1%82%D0%BD%D1%8B%D0%B5_%D0%BF%D0%BE_%D0%B0%D0%BB%D1%84%D0%B0%D0%B2%D0%B8%D1%82%D1%83"
-        start_page_url = urljoin(self.home_page, start_page_suffix)
-        self._scan_wiki(url_to_parse=start_page_url)
-        animals_report = self.group_animals_by_first_letter()
-        self.write_report_to_csv(animals_report)
+    def __init__(self) -> None:
+        """
+        Initializes the parser with base URL, start page suffix, and output filename.
+        """
+        self.base_url: str = "https://ru.wikipedia.org/"
+        self.data: List[Dict[str, str]] = []
+        self.start_page_suffix: str = "w/index.php?title=Категория:Животные_по_алфавиту"
+        self.output_file: Path = Path(__file__).parent /  "report.csv"
+        self.log_file = Path(__file__).parent / "parser.log"
+        logger.add(self.log_file, rotation="10 MB")
+        logger.info("WikiAnimalParser initialized")
 
-    def _scan_wiki(self, url_to_parse):
-        page_html = requests.get(url=url_to_parse).text
-        soup = BeautifulSoup(page_html, 'lxml')
-        li_elements = soup.select('div.mw-category.mw-category-columns li')
+    def run(self) -> None:
+        """
+        Runs the parsing process, starting from the initial page and continuing
+        through all subsequent pages. Finally, groups the data and writes a CSV report.
+        """
+        logger.info("Starting parsing process")
+        start_url = self._get_absolute_url(suffix=self.start_page_suffix)
+        self._parse_animals(url=start_url)
+        grouped_data = self._group_animals_by_first_letter()
+        self._write_report(grouped_data)
+        logger.info("Parsing process completed successfully")
 
-        for li in li_elements:
-            animal_name = li.a['title'].capitalize()
-            first_letter = animal_name[0]
-            data = {'First Letter': first_letter, 'Animal name': animal_name}
-            self.data.append(data)
+    def _get_absolute_url(self, suffix: str) -> str:
+        """
+        Constructs an absolute URL from the base URL and a given suffix.
 
-        next_page = soup.find('a', string="Следующая страница")
+        Args:
+            suffix (str): The URL suffix to join.
+
+        Returns:
+            str: The absolute URL.
+        """
+        return urljoin(self.base_url, suffix)
+
+    def _parse_animals(self, url: str) -> None:
+        """
+        Parses animal names from the provided URL and follows 'Next page' links recursively.
+
+        Args:
+            url (str): The URL of the page to parse.
+        """
+        logger.debug(f"Fetching URL: {url}")
+        response = requests.get(url=url)
+        soup = BeautifulSoup(response.text, "lxml")
+        li_elements = soup.select("div.mw-category.mw-category-columns li")
+
+        if li_elements:
+            for li in li_elements:
+                animal_name = li.a["title"].capitalize()
+                logger.debug(f"Extracted animal: {animal_name}")
+                data = {
+                    "First Letter": animal_name[0],
+                    "Animal name": animal_name,
+                }
+                self.data.append(data)
+            logger.info(f"Extracted animals: {len(self.data)}")
+
+        next_page = soup.find("a", string="Следующая страница")
         if next_page:
-            next_page_suffix = next_page['href']
-            next_page_url = urljoin(self.home_page, next_page_suffix)
-            self._scan_wiki(url_to_parse=next_page_url)
+            next_page_suffix = next_page["href"]
+            next_page_url = self._get_absolute_url(suffix=next_page_suffix)
+            logger.debug(f"Next page found: {next_page_url}")
+            self._parse_animals(url=next_page_url)
+        else:
+            logger.warning(f"Next page not found")
 
-    def group_animals_by_first_letter(self):
+    def _group_animals_by_first_letter(self) -> pd.DataFrame:
+        """
+        Groups the extracted animal data by the first letter and counts the total
+        number of animals for each group.
+
+        Returns:
+            pd.DataFrame: A DataFrame with columns 'First Letter' and 'Total Amount'.
+        """
+        logger.info("Grouping data by first letter")
         df = pd.DataFrame(self.data)
-        query = df.groupby(['First Letter']).count().reset_index(names=['First Letter', 'Total Amount'])
-        return query
+        animals_grouped = (
+            df.groupby(["First Letter"])
+            .count()
+            .reset_index(names=["First Letter", "Total Amount"])
+        )
+        return animals_grouped
 
-    @staticmethod
-    def write_report_to_csv(df):
-        df.to_csv('report.csv', encoding='utf-8', index=False, header=False)
+    def _write_report(self, df: pd.DataFrame):
+        """
+        Writes the grouped animal data to a CSV file.
+
+        Args:
+            df (pd.DataFrame): The DataFrame containing grouped data.
+        """
+        logger.info(f"Writing report to {self.output_file}")
+        df.to_csv(self.output_file, encoding="utf-8", index=False, header=False)
+        logger.success(f"Report successfully written to {self.output_file}")
