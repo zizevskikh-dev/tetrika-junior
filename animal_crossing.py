@@ -1,4 +1,4 @@
-from task2.core import WikiAnimalParser
+from task2.solution import WikiAnimalParser
 
 
 def main() -> None:
