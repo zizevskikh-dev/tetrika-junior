@@ -1,14 +1,18 @@
 [project]
 name = "tetrika-junior"
-version = "0.1.0"
-description = ""
+version = "1.0.1"
+description = "A collection of Python exercises demonstrating parsing, decorators, and data validation."
 authors = [
     {name = "Aleksander Zizevskikh",email = "zizevskikh.dev@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.12"
-dependencies = [
+packages = [
+    { include = "task1" },
+    { include = "task2" },
+    { include = "task3" }
 ]
+requires-python = ">=3.12"
+dependencies = []
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
