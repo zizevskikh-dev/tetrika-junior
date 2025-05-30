@@ -14,8 +14,8 @@ class TestDataManager:
 
         Loads the JSON data from the file system, and extracts lesson intervals and expected answers.
         """
-        self.json_file: Path = Path(__file__).parent / "intervals.json"
-        self.data: List[Dict[str, Any]] = self._deserialize_json()
+        self.json_file: Path = Path(__file__).parent / "test_data.json"
+        self.test_data: List[Dict[str, Any]] = self._deserialize_json()
         self.lessons_data: List[Dict[str, List[int]]] = self._extract_lessons_data()
         self.test_answers: List[int] = self._extract_test_answers()
 
@@ -36,7 +36,7 @@ class TestDataManager:
         Returns:
             List[Dict[str, List[int]]]: Lessons interval data.
         """
-        return [interval["intervals"] for interval in self.data]
+        return [interval["intervals"] for interval in self.test_data]
 
     def _extract_test_answers(self) -> List[int]:
         """Extracts the expected output ('answer') for each test case.
@@ -45,4 +45,4 @@ class TestDataManager:
             List[int]: A list of integers representing the correct connection durations
             for each lesson.
         """
-        return [interval["answer"] for interval in self.data]
+        return [interval["answer"] for interval in self.test_data]

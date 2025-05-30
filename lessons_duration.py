@@ -19,6 +19,7 @@ def main() -> None:
         assert (
             lesson_duration == test_answer
         ), f"Error on test case {i_test}, got {lesson_duration}, expected {test_answer}"
+        print(f"Test case {i_test} passed successfully")
 
 
 if __name__ == "__main__":
