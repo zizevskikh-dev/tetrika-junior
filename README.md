@@ -3,7 +3,9 @@
 ## A collection of Python exercises and utilities demonstrating:
 
 𖦹 Runtime type checking via decorator
+
 🦝 Parsing structured data (e.g., animal info from Wikipedia)
+
 ⏳ Lesson duration validation using JSON
 
 ---
