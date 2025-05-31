@@ -40,7 +40,7 @@
 
 	- **Using pip (with venv):**
 		```bash
-		python -m venv .venv
+		python3 -m venv .venv
 		```
 
 		- *Unix:*
