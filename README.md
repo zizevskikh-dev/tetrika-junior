@@ -50,7 +50,7 @@
 
 		- Windows:
 			```bash
-			.venv\Scripts\activate
+			God bless you!
 			```
 
 		```bash
