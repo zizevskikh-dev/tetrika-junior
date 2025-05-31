@@ -50,7 +50,7 @@
 
 		- Windows:
 			```bash
-			God bless you!
+			God bless you
 			```
 
 		```bash
