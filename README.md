@@ -40,21 +40,21 @@
 
 ## 🚀 Usage Guide
 
-### 1. Type Hint Decorator
+### 1. Type Hints Decorator
 
 Runtime enforcement of type hints using a custom `@strict` decorator:
 ```bash
 poetry run python type_hints_decorator.py
 ```
 
-### 2. Animal Crossing Parser
+### 2. Animal Crossing
 
 Fetches animal data (e.g. from Wikipedia):
 ```bash
 poetry run python animal_crossing.py
 ```
 
-### 3. Lesson Duration Validator
+### 3. Lesson Duration
 
 Validates class durations using test data in `task3/test_data.json`:
 ```bash
