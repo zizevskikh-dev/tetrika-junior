@@ -54,7 +54,7 @@ Fetches animal data (e.g. from Wikipedia):
 poetry run python animal_crossing.py
 ```
 
-### 3. Lesson Duration
+### 3. Lessons Duration
 
 Validates class durations using test data in `task3/test_data.json`:
 ```bash
