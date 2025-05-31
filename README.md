@@ -18,6 +18,7 @@
 ## 📦 Installation
 
 > The project is managed using [Poetry](https://python-poetry.org/) for packaging and dependency management.
+> 
 > Alternatively, you can use standard `venv` and install dependencies from `requirements.txt`.
 
 1. **Clone the repository:** 
