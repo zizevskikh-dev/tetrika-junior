@@ -48,9 +48,9 @@
 			source .venv/bin/activate
 			```
 
-		- Windows:
+		- Windows (`cmd`):
 			```bash
-			God bless you
+			.\.venv\Scripts\activate
 			```
 
 		```bash
