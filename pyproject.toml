@@ -24,3 +24,7 @@ loguru = { version = "^0.7.3", python = "<4.0,>=3.5" }
 lxml = "^5.4.0"
 pandas = "^2.2.3"
 requests = "^2.32.3"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.5"
+
