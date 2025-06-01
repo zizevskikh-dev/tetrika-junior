@@ -1,4 +1,5 @@
 from pathlib import Path
+import sys
 from typing import Dict, List
 from urllib.parse import urljoin
 
@@ -21,10 +22,25 @@ class WikiAnimalParser:
         self.base_url: str = "https://ru.wikipedia.org/"
         self.data: List[Dict[str, str]] = []
         self.start_page_suffix: str = "w/index.php?title=Категория:Животные_по_алфавиту"
-        self.output_file: Path = Path(__file__).parent /  "report.csv"
+        self.output_file: Path = Path(__file__).parent / "report.csv"
         self.log_file = Path(__file__).parent / "parser.log"
-        logger.add(self.log_file, rotation="10 MB")
-        logger.info("WikiAnimalParser initialized")
+
+        logger.remove()
+        logger.add(
+            sink=self.log_file,
+            level="DEBUG",
+            rotation="10 MB",
+            retention=10,
+            encoding="utf-8",
+            format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {line}: {function} | {elapsed} | {message}",
+            compression="zip",
+        )
+        logger.add(
+            sink=sys.stdout,
+            filter=lambda record: record["level"].name in ["INFO", "SUCCESS"],
+            format="<blue>{time:YYYY-MM-DD HH:mm:ss}</blue> | {level} | {message}",
+        )
+        logger.debug("WikiAnimalParser initialized")
 
     def run(self) -> None:
         """
@@ -36,7 +52,7 @@ class WikiAnimalParser:
         self._parse_animals(url=start_url)
         grouped_data = self._group_animals_by_first_letter()
         self._write_report(grouped_data)
-        logger.info("Parsing process completed successfully")
+        logger.success("Parsing process completed!")
 
     def _get_absolute_url(self, suffix: str) -> str:
         """
@@ -81,6 +97,7 @@ class WikiAnimalParser:
             self._parse_animals(url=next_page_url)
         else:
             logger.warning(f"Next page not found")
+            logger.info(f"Finishing parsing process")
 
     def _group_animals_by_first_letter(self) -> pd.DataFrame:
         """
@@ -108,4 +125,4 @@ class WikiAnimalParser:
         """
         logger.info(f"Writing report to {self.output_file}")
         df.to_csv(self.output_file, encoding="utf-8", index=False, header=False)
-        logger.success(f"Report successfully written to {self.output_file}")
+        logger.success(f"Report has been written")
