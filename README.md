@@ -40,7 +40,7 @@
 
 	- **Using pip (with venv):**
 		```bash
-		python3 -m venv .venv
+		python -m venv .venv
 		```
 
 		- *Unix:*
@@ -65,21 +65,21 @@
 
 Runtime enforcement of type hints using a custom `@strict` decorator:
 ```bash
-python3 type_hints_decorator.py
+python annotation_decorator.py
 ```
 
 ### 2. Animal Crossing
 
 Fetches animal data (e.g. from Wikipedia):
 ```bash
-python3 animal_crossing.py
+python animal_crossing.py
 ```
 
 ### 3. Lessons Duration
 
 Validates class durations using test data in `task3/test_data.json`:
 ```bash
-python3 lessons_duration.py
+python lessons_duration.py
 ```
 
 ---
