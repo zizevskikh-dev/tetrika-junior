@@ -25,7 +25,7 @@ class WikiAnimalParser:
             url="w/index.php?title=Категория:Животные_по_алфавиту"
         )
         self.data: List[Dict[str, str]] = []
-        self.output_file: Path = Path(__file__).parent / "report.csv"
+        self.output_file: Path = Path(__file__).parent / "beasts.csv"
         self.log_file = Path(__file__).parent / "parser.log"
 
         logger.remove()
