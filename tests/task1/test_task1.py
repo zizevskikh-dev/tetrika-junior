@@ -18,7 +18,7 @@ def test_sum_two(sum_two_case_passed):
             If the result from sum_two does not match the expected value.
     """
     a, b, expected = sum_two_case_passed
-    assert a + b == expected
+    assert sum_two(a, b) == expected
 
 
 def test_sum_two_failures(sum_two_case_failed):
