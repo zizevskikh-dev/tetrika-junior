@@ -3,5 +3,5 @@ black==25.1.0
 loguru==0.7.3
 lxml==5.4.0
 pandas==2.2.3
-pytest==8.3.5
+pytest==8.4.0
 requests==2.32.3

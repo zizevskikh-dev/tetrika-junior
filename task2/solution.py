@@ -17,12 +17,11 @@ class WikiAnimalParser:
 
     def __init__(self) -> None:
         """
-        Initializes the parser with base URL, start page suffix, and output filename.
+        Initializes the parser with base URL, start page URL, and output filename.
         """
-        self.base_url: str = "https://ru.wikipedia.org/"
+        self.base_url: str = "https://ru.wikipedia.org"
         self.start_page_url = urljoin(
-            base=self.base_url,
-            url="w/index.php?title=Категория:Животные_по_алфавиту"
+            base=self.base_url, url="wiki/Категория:Животные_по_алфавиту"
         )
         self.data: List[Dict[str, str]] = []
         self.output_file: Path = Path(__file__).parent / "beasts.csv"
@@ -56,7 +55,6 @@ class WikiAnimalParser:
         self._write_report(grouped_data)
         logger.success("Parsing process completed!")
 
-
     def _parse_animals(self, url: str) -> None:
         """
         Parses animal names from the provided URL and follows 'Next page' links recursively.
@@ -84,7 +82,7 @@ class WikiAnimalParser:
         if next_page:
             next_page_suffix = next_page["href"]
             next_page_url = urljoin(base=self.base_url, url=next_page_suffix)
-            logger.debug(f"Next page found: {next_page_url}")
+            logger.debug(f"Next page: {next_page_url}")
             self._parse_animals(url=next_page_url)
         else:
             logger.warning(f"Next page not found")
