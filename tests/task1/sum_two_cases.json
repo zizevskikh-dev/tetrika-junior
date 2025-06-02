@@ -1,0 +1,46 @@
+{
+    "PASSED":[
+        {
+            "a":-1,
+            "b":4,
+            "expected":3
+        },
+        {
+            "a":true,
+            "b":6,
+            "expected":7
+        },
+        {
+            "a":4.2,
+            "b":false,
+            "expected":4.2
+        },
+        {
+            "a":10,
+            "b":99.6,
+            "expected":109.6
+        },
+        {
+            "a":"Concatenate",
+            "b":"String",
+            "expected":"ConcatenateString"
+        }
+    ],
+    "FAILED":[
+        {
+            "a": 99,
+            "b": "Problems",
+            "expected_error": "TypeError"
+        },
+        {
+            "a": ["Can't ", "concatenate "],
+            "b": "it",
+            "expected_error": "TypeError"
+        },
+        {
+            "a": null,
+            "b": 5,
+            "expected_error": "TypeError"
+        }
+    ]
+}
