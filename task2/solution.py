@@ -20,8 +20,11 @@ class WikiAnimalParser:
         Initializes the parser with base URL, start page suffix, and output filename.
         """
         self.base_url: str = "https://ru.wikipedia.org/"
+        self.start_page_url = urljoin(
+            base=self.base_url,
+            url="w/index.php?title=Категория:Животные_по_алфавиту"
+        )
         self.data: List[Dict[str, str]] = []
-        self.start_page_suffix: str = "w/index.php?title=Категория:Животные_по_алфавиту"
         self.output_file: Path = Path(__file__).parent / "report.csv"
         self.log_file = Path(__file__).parent / "parser.log"
 
@@ -48,23 +51,11 @@ class WikiAnimalParser:
         through all subsequent pages. Finally, groups the data and writes a CSV report.
         """
         logger.info("Starting parsing process")
-        start_url = self._get_absolute_url(suffix=self.start_page_suffix)
-        self._parse_animals(url=start_url)
+        self._parse_animals(url=self.start_page_url)
         grouped_data = self._group_animals_by_first_letter()
         self._write_report(grouped_data)
         logger.success("Parsing process completed!")
 
-    def _get_absolute_url(self, suffix: str) -> str:
-        """
-        Constructs an absolute URL from the base URL and a given suffix.
-
-        Args:
-            suffix (str): The URL suffix to join.
-
-        Returns:
-            str: The absolute URL.
-        """
-        return urljoin(self.base_url, suffix)
 
     def _parse_animals(self, url: str) -> None:
         """
@@ -92,7 +83,7 @@ class WikiAnimalParser:
         next_page = soup.find("a", string="Следующая страница")
         if next_page:
             next_page_suffix = next_page["href"]
-            next_page_url = self._get_absolute_url(suffix=next_page_suffix)
+            next_page_url = urljoin(base=self.base_url, url=next_page_suffix)
             logger.debug(f"Next page found: {next_page_url}")
             self._parse_animals(url=next_page_url)
         else:
