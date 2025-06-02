@@ -30,17 +30,17 @@
         {
             "a": 99,
             "b": "Problems",
-            "expected_error": "TypeError"
+            "expected": "TypeError"
         },
         {
             "a": ["Can't ", "concatenate "],
             "b": "it",
-            "expected_error": "TypeError"
+            "expected": "TypeError"
         },
         {
             "a": null,
             "b": 5,
-            "expected_error": "TypeError"
+            "expected": "TypeError"
         }
     ]
 }
