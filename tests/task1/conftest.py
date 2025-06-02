@@ -22,12 +22,13 @@ def load_cases_from_json(path: Path, case_exp: str):
     with open(path, "r") as jsonfile:
         data = json.load(jsonfile)
         for case in data[case_exp]:
-            yield (case["a"], case["b"], case["expected"])
-
+            yield case["a"], case["b"], case["expected"]
 
 
 @pytest.fixture(
-    params=list(load_cases_from_json(Path(__file__).parent / "sum_two_cases.json", "PASSED")),
+    params=list(
+        load_cases_from_json(Path(__file__).parent / "sum_two_cases.json", "PASSED")
+    ),
     ids=lambda val: f"{val[0]} + {val[1]} == {val[2]}",
 )
 def sum_two_case_passed(request):
@@ -45,7 +46,9 @@ def sum_two_case_passed(request):
 
 
 @pytest.fixture(
-    params=list(load_cases_from_json(Path(__file__).parent / "sum_two_cases.json", "FAILED")),
+    params=list(
+        load_cases_from_json(Path(__file__).parent / "sum_two_cases.json", "FAILED")
+    ),
     ids=lambda val: f"{val[0]} + {val[1]} raises {val[2]}",
 )
 def sum_two_case_failed(request):
