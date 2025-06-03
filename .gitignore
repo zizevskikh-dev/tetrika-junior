@@ -1,12 +1,20 @@
-__pycache__/
-.pytest_cache/
+# Python and pytest cache
+**/__pycache__/
+**/.pytest_cache/
+
+# Environment folders
 .venv/
 
+# Dependency files
+poetry.lock
+
+# IDEs
 .idea/
 .vscode/
 
-poetry.lock
-
-*.csv
+# Logs
+**/logs/
 *.log
-*.zip
+
+# Data files
+*.csv
