@@ -1,12 +1,13 @@
 from pathlib import Path
-import sys
 from typing import Dict, List
 from urllib.parse import urljoin
 
-from bs4 import BeautifulSoup
-from loguru import logger
 import pandas as pd
 import requests
+from bs4 import BeautifulSoup
+from loguru import logger
+
+from task2.logger_config import LoggerConfigurator
 
 
 class WikiAnimalParser:
@@ -17,31 +18,17 @@ class WikiAnimalParser:
 
     def __init__(self) -> None:
         """
-        Initializes the parser with base URL, start page URL, and output filename.
+        Initializes the parser with base URL, start page URL, and report filename.
         """
         self.base_url: str = "https://ru.wikipedia.org"
         self.start_page_url = urljoin(
             base=self.base_url, url="wiki/Категория:Животные_по_алфавиту"
         )
         self.data: List[Dict[str, str]] = []
-        self.output_file: Path = Path(__file__).parent / "beasts.csv"
+        self.report_file: Path = Path(__file__).parent / "beasts.csv"
         self.log_file = Path(__file__).parent / "parser.log"
 
-        logger.remove()
-        logger.add(
-            sink=self.log_file,
-            level="DEBUG",
-            rotation="10 MB",
-            retention=10,
-            encoding="utf-8",
-            format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {line}: {function} | {elapsed} | {message}",
-            compression="zip",
-        )
-        logger.add(
-            sink=sys.stdout,
-            filter=lambda record: record["level"].name in ["INFO", "SUCCESS"],
-            format="<blue>{time:YYYY-MM-DD HH:mm:ss}</blue> | {level} | {message}",
-        )
+        LoggerConfigurator(log_file=self.log_file).setup_logger()
         logger.debug("WikiAnimalParser initialized")
 
     def run(self) -> None:
@@ -112,6 +99,6 @@ class WikiAnimalParser:
         Args:
             df (pd.DataFrame): The DataFrame containing grouped data.
         """
-        logger.info(f"Writing report to {self.output_file}")
-        df.to_csv(self.output_file, encoding="utf-8", index=False, header=False)
+        logger.info(f"Writing report to: {self.report_file}")
+        df.to_csv(self.report_file, encoding="utf-8", index=False, header=False)
         logger.success(f"Report has been written")
