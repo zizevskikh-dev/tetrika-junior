@@ -1,65 +1,33 @@
-import json
 from pathlib import Path
+from typing import Any, Tuple
+
 import pytest
+from pytest import FixtureRequest
+
+from tests.json_interaction import load_cases_from_json
 
 
-def load_cases_from_json(path: Path, case_exp: str):
-    """
-    Loads test cases from a JSON file.
+SUM_TWO_CASES_PATH = Path(__file__).parent / "cases" / "sum_two_cases.json"
 
-    Reads the specified JSON file and yields test cases.
-
-    Args:
-        path : Path
-            The path to the JSON file containing test data.
-        case_exp : str
-            The key in the JSON file indicating the type of cases to load ("PASSED" or "FAILED").
-
-    Yields:
-        tuple
-            A tuple of (a, b, expected) for PASSED and FAILED cases,
-    """
-    with open(path, "r") as jsonfile:
-        data = json.load(jsonfile)
-        for case in data[case_exp]:
-            yield case["a"], case["b"], case["expected"]
+sum_two_positive_cases = load_cases_from_json(
+    file=SUM_TWO_CASES_PATH, case_exp="PASSED"
+)
+sum_two_negative_cases = load_cases_from_json(
+    file=SUM_TWO_CASES_PATH, case_exp="FAILED"
+)
 
 
 @pytest.fixture(
-    params=list(
-        load_cases_from_json(Path(__file__).parent / "sum_two_cases.json", "PASSED")
-    ),
-    ids=lambda val: f"{val[0]} + {val[1]} == {val[2]}",
+    params=sum_two_positive_cases,
+    ids=lambda case: f" {case["a"]} + {case["b"]} ",
 )
-def sum_two_case_passed(request):
-    """
-    Pytest fixture providing positive test cases.
-
-    Yields:
-        tuple
-            A tuple of (a, b, expected) where:
-                - a : The first operand.
-                - b : The second operand.
-                - expected : The expected result of sum_two(a, b).
-    """
-    return request.param
+def positive_case(request: FixtureRequest) -> Tuple[Any]:
+    return tuple(request.param.values())
 
 
 @pytest.fixture(
-    params=list(
-        load_cases_from_json(Path(__file__).parent / "sum_two_cases.json", "FAILED")
-    ),
-    ids=lambda val: f"{val[0]} + {val[1]} raises {val[2]}",
+    params=sum_two_negative_cases,
+    ids=lambda case: f" {type(case["a"]).__name__} + {type(case["b"]).__name__} raises TypeError",
 )
-def sum_two_case_failed(request):
-    """
-    Pytest fixture providing negative test cases.
-
-    Yields:
-        tuple
-            A tuple of (a, b, expected_error) where:
-                - a : The first operand.
-                - b : The second operand.
-                - expected : The name of the expected exception (as string).
-    """
-    return request.param
+def negative_case(request: FixtureRequest) -> Tuple[Any]:
+    return tuple(request.param.values())
