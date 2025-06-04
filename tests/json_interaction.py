@@ -17,7 +17,7 @@ def load_cases_from_json(
         Dict[str, Any]: A dictionary representing a single test case.
     """
 
-    with open(file, "r") as jsonfile:
+    with open(file=file, mode="r", encoding="utf-8") as jsonfile:
         data = json.load(jsonfile)
         for case in data[case_exp]:
             yield case

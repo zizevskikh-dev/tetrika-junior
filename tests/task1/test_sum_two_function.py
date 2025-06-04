@@ -5,7 +5,7 @@ import pytest
 from task1.solution import strict, sum_two
 
 
-def test_positive_cases(positive_case: Tuple[Any, Any]):
+def test_sum_two_positive_cases(get_sum_two_positive_case: Tuple[Any, Any]):
     """
     Tests that sum_two(a, b) returns the correct result for valid arguments.
 
@@ -13,16 +13,16 @@ def test_positive_cases(positive_case: Tuple[Any, Any]):
     produces the expected result equal to a + b.
 
     Args:
-        positive_case (tuple): A tuple (a, b) containing valid arguments.
+        get_sum_two_positive_case (tuple): A tuple (a, b) containing valid arguments.
 
     Raises:
         AssertionError: If sum_two(a, b) does not return a + b.
     """
-    a, b = positive_case
+    a, b = get_sum_two_positive_case
     assert a + b == sum_two(a, b)
 
 
-def test_negative_cases(negative_case: Tuple[Any, Any]):
+def test_sum_two_negative_cases(get_sum_two_negative_case: Tuple[Any, Any]):
     """
     Tests that sum_twosum_two(a, b) raises a TypeError for invalid arguments.
 
@@ -30,11 +30,11 @@ def test_negative_cases(negative_case: Tuple[Any, Any]):
     raises a TypeError as expected.
 
     Args:
-        negative_case (tuple): A tuple (a, b) containing invalid arguments.
+        get_sum_two_negative_case (tuple): A tuple (a, b) containing invalid arguments.
 
     Raises:
         AssertionError: If TypeError wasn't raise.
     """
-    a, b = negative_case
+    a, b = get_sum_two_negative_case
     with pytest.raises(TypeError):
         sum_two(a, b)
