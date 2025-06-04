@@ -26,4 +26,4 @@ class CSVReportWriter:
         """
         logger.info(f"Writing report to: {self.output_file}")
         df.to_csv(self.output_file, encoding="utf-8", index=True, header=False)
-        logger.success("Report has been written")
+        logger.info("Report has been written")

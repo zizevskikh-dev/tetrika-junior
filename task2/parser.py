@@ -1,5 +1,5 @@
 from typing import Dict, List
-from urllib.parse import urljoin
+from urllib.parse import urljoin, unquote
 
 import requests
 from bs4 import BeautifulSoup
@@ -52,7 +52,10 @@ class WikiAnimalParser:
 
         next_page = soup.find("a", string="Следующая страница")
         if next_page:
-            next_page_url = urljoin(base=self.base_url, url=next_page["href"])
+            next_page_url = urljoin(
+                base=self.base_url,
+                url=unquote(next_page["href"]),
+            )
             logger.debug(f"Next page: {next_page_url}")
             self._parse_animals(url=next_page_url)
         else:

@@ -37,7 +37,7 @@ class LoggerConfigurator:
         logger.add(
             sink=sys.stdout,
             filter=lambda record: record["level"].name in ["INFO", "SUCCESS"],
-            format="<blue>{time:YYYY-MM-DD HH:mm:ss}</blue> | {level} | {message}",
+            format="<blue>{time:YYYY-MM-DD HH:mm:ss}</blue> | {message}",
         )
 
         logger.debug(f"Logger initialized with log file: {self.log_file}")

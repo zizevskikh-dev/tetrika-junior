@@ -1,5 +1,7 @@
 from pathlib import Path
 
+from loguru import logger
+
 from task2.data_manager import AnimalDataStructurer
 from task2.logger_config import LoggerConfigurator
 from task2.parser import WikiAnimalParser
@@ -39,3 +41,5 @@ if __name__ == "__main__":
     data_parsed = parser.parse()
     data_structured = structurer.group_animals_by_first_letter(data=data_parsed)
     writer.write(df=data_structured)
+
+    logger.success("Parsing finished. Check the logs and output files.")
