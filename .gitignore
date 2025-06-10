@@ -16,5 +16,6 @@ poetry.lock
 **/logs/
 *.log
 
-# Data files
+# Data directories and files
+**/reports/
 *.csv

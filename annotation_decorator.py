@@ -1,13 +1,13 @@
-from task1.solution import sum_two
+from task1.decorated_funcs import sum_two
 
 
 def main() -> None:
     """
     Entry point of annotation decorator realisation.
 
-    cCalls the `sum_two` function with two objects and returns the result.
+    Calls the `sum_two` function with two operands and prints the result.
     """
-    return sum_two(a=1, b=2)
+    print(sum_two(a=1, b=2))
 
 
 if __name__ == "__main__":

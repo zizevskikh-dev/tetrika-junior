@@ -1,38 +1,57 @@
-from typing import List, Dict
+from typing import List
 
 import pandas as pd
 from loguru import logger
 
 
-class AnimalDataStructurer:
+class DataStructurer:
     """
-    Structures animal data for reporting.
+    Groups a list of animal names by their first letter using pandas.
+
+    This class takes a list of "animal names" and produces a grouped DataFrame
+    showing how many animals start with each letter of the alphabet.
+
+    Example:
+        Input: ["Python europaeus", "Hydrochoerinae", "Python kyaiktiyo"]
+        Output:
+            first_letter  count
+            H             1
+            P             2
     """
 
-    @staticmethod
-    def group_animals_by_first_letter(data: List[Dict[str, str]]) -> pd.DataFrame:
+    def __init__(self, data: List[str]) -> None:
         """
-        Groups the extracted animal data by the first letter and counts the total
-        number of animals for each group.
+        Initializes the DataStructurer with a list of animal names.
 
         Args:
-            data (List[Dict[str, str]]): A list of dictionaries, where each dictionary
-                represents an animal entry with the following structure:
-                - 'letter': The first letter of the animal's name.
-                - 'name' : The full name of the animal.
+            data (List[str]): List of animal names.
+        """
+        self.animal_names = data
+
+        logger.debug("DataStructurer initialized")
+
+    def group_animals_by_first_letter(self) -> pd.DataFrame:
+        """
+        Groups animal names by the first letter and counts occurrences.
 
         Returns:
-            pd.DataFrame: A DataFrame with two columns:
-                - 'letter': The initial letter of animal names.
-                - 'count': The number of animals starting with each letter.
+            pd.DataFrame: DataFrame with columns:
+                - first_letter (str): The first letter of the animal name.
+                - count (int): Number of unique animal names starting with that letter.
         """
-        logger.info("Grouping animal data by first letter")
+        logger.info("Grouping animal names by first letter")
 
-        df = pd.DataFrame(data)
-        df_grouped = (
-            df.groupby("letter")
-            .count()
-            .sort_values(by=["letter"], ascending=True)
-            .rename(columns={"name": "count"})
+        if not self.animal_names:
+            logger.warning("No animal names to structuring process")
+            return pd.DataFrame(columns=["first_letter", "count"])
+
+        unique_names = pd.Series(self.animal_names).str.capitalize().drop_duplicates()
+        first_letters = unique_names.str[0]
+
+        df = pd.DataFrame({"first_letter": first_letters})
+
+        grouped_df = (
+            df.value_counts().reset_index(name="count").sort_values(by="first_letter")
         )
-        return df_grouped
+
+        return grouped_df

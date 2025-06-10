@@ -2,7 +2,7 @@ from typing import Any, Tuple
 
 import pytest
 
-from task1.solution import strict, sum_two
+from task1.strict_types_decorator import strict, sum_two
 
 
 def test_sum_two_positive_cases(get_sum_two_positive_case: Tuple[Any, Any]):

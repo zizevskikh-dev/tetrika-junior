@@ -41,18 +41,3 @@ def strict(func):
         return func(*args, **kwargs)
 
     return wrapped_func
-
-
-@strict
-def sum_two(a: int, b: int):
-    """
-    Adds two objects together.
-
-    Args:
-        a : The first operand.
-        b : The second operand.
-
-    Returns:
-        The sum or concatenation of the two operands.
-    """
-    return a + b

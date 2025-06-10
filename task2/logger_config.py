@@ -1,26 +1,29 @@
 from pathlib import Path
 import sys
+from typing import Union
 
 from loguru import logger
 
 
 class LoggerConfigurator:
     """
-    Configures and initializes logging for the parsing process.
+    Configures loguru logging with both file and console output.
     """
 
-    def __init__(self, log_file: Path) -> None:
+    def __init__(self, log_file: Union[str, Path]) -> None:
         """
         Initializes the logger configuration.
 
         Args:
-            log_file (Path): The path to the log file.
+            log_file (Union[str, Path]): Path to the file where logs should be stored.
         """
         self.log_file = log_file
 
     def setup_logger(self) -> None:
         """
-        Sets up the logger with file and console sinks.
+        Sets up the loguru logger:
+            - Logs DEBUG and higher to a rotating, compressed log file.
+            - Logs INFO and SUCCESS levels to the console output.
         """
         logger.remove()
 
@@ -29,15 +32,15 @@ class LoggerConfigurator:
             level="DEBUG",
             rotation="10 MB",
             retention=10,
+            compression="zip",
             encoding="utf-8",
             format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {line}: {function} | {elapsed} | {message}",
-            compression="zip",
         )
 
         logger.add(
             sink=sys.stdout,
             filter=lambda record: record["level"].name in ["INFO", "SUCCESS"],
-            format="<blue>{time:YYYY-MM-DD HH:mm:ss}</blue> | {message}",
+            format="<blue>{time:YYYY-MM-DD HH:mm:ss}</blue> | <green>{level}</green> | {message}",
         )
 
         logger.debug(f"Logger initialized with log file: {self.log_file}")
